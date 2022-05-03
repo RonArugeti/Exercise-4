@@ -207,14 +207,14 @@ void writeToBinFile(const char* fileName, Student* students, int numberOfStudent
 
 Student* readFromBinFile(const char* fileName)
 {
-    //add code here
-    return <#expression#>;
+    Student* std= (Student*)malloc(sizeof(Student));
+    return std;
 }
 
 Student* transformStudentArray(char*** students, const int* coursesPerStudent, int numberOfStudents)
 {
-    //add code here
-    return <#expression#>;
+    Student* std= (Student*)malloc(sizeof(Student));
+    return std;
 }
     // Implementation of itoa()
 void itoa(int num, char** str, int base)
