@@ -164,21 +164,25 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
 
 void factorGivenCourse(char** const* students, const int* coursesPerStudent, int numberOfStudents, const char* courseName, int factor)
 {
-    int grade_num;
-    char* grade_str = NULL;
-    if (factor > 20 || factor < -20) return;
-    for (int i = 0; i < numberOfStudents; i++) {
-        for (int j = 0; j < coursesPerStudent[i]; j++) {
-        if (!strcmp(courseName, students[i][j])) {
-            j++;
-            grade_num = atoi(students[i][j]) + factor;
-            if ((grade_num > 0) && (grade_num < 100)) {
-                itoa(grade_num, &(students[i][j]), 10);
-            }
-            }
+int grade_num;
+if (factor > 20 || factor < -20) return;
+for (int i = 0; i < numberOfStudents; i++) {
+ for (int j = 1; j < (coursesPerStudent[i])*2; j++) {
+    if (!strcmp(courseName, students[i][j])) {
+    grade_num = atoi(students[i][j]) + factor;
+    if ((grade_num >= 0) && (grade_num <= 100))
+    itoa(grade_num, &(students[i][j]), 10);
+    if (grade_num < 0) {
+    students[i][j] = (char*)realloc(students[i][j], sizeof(char)*2);
+    students[i][j] = "0";
+    }
+    if (grade_num > 100) {
+    students[i][j] = (char*)realloc(students[i][j], sizeof(char)*4);
+    students[i][j] = "100";
         }
     }
-    //add code here
+}
+    }
 }
 
 void printStudentArray(const char* const* const* students, const int* coursesPerStudent, int numberOfStudents)
