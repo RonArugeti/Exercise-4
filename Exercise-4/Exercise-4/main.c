@@ -6,8 +6,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#define ALO "***Allocation failed!***\n"
-
+#define MAX_LINE 1023
+#define ALO "***Allocation Failed***\n"
+#define FOF "***Error Openning File***\n"
 typedef struct StudentCourseGrade
 {
     char courseName[35];
@@ -62,26 +63,36 @@ int main()
 
 void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
-    if (!fileName) return;
-    fopen(fileName, "r");
-    char* fileTemp = (char*)calloc(strlen(fileName)+1, sizeof(char));
-    if (fileTemp == NULL) {
-        printf(ALO); exit(1);
+    FILE* file = fopen(fileName, "rt");
+    if (feof(file)) {
+        printf(FOF); return;
     }
-    strcpy(fileTemp, fileName);
-    while (fileTemp) {
+    fseek(file, 0, SEEK_END);
+    int length = (int)ftell(file);
+    fseek(file, 0, SEEK_SET);
+    
+    char* fileTemp = (char*)calloc(length+1, sizeof(int));
+    if (fileTemp == NULL) { printf(ALO); exit(1);}
+    while (!feof(file)) {
+    fgets(fileTemp, MAX_LINE, file);
         (*numberOfStudents)++;
         fileTemp = strchr(fileTemp, '\n');
-        fileTemp++;
-    }
-    *coursesPerStudent = (int*)calloc(sizeof(int),*numberOfStudents);
-    if (*coursesPerStudent == NULL) {
-        printf(ALO); exit(1);
-    }
-    for (int i = 0; i < *numberOfStudents; i++) {
-       (*coursesPerStudent)[i] = countPipes(fileName, *numberOfStudents);
     }
     free(fileTemp);
+    fclose(file);
+    file = fopen(fileName, "rt");
+    if (feof(file)) {
+        printf(FOF); return;
+    }
+    fileTemp = (char*)calloc(length+1, sizeof(int));
+    *coursesPerStudent = (int*)calloc(sizeof(int),*numberOfStudents);
+    if (*coursesPerStudent == NULL || fileTemp == NULL) { printf(ALO); exit(1);}
+    for (int i = 0; i < *numberOfStudents; i++) {
+        fgets(fileTemp, MAX_LINE, file);
+        (*coursesPerStudent)[i] = countPipes(fileTemp, *numberOfStudents);
+    }
+    fclose(file);
+    return;
 }
 
 int countPipes(const char* lineBuffer, int maxCount)
@@ -132,8 +143,8 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
     if (newStudentArray == NULL) {
         printf(ALO); exit(1);
     }
-
-    fgets(fileTemp, 1023, file);
+    //set the first line in string "fileTemp"
+    fgets(fileTemp, MAX_LINE, file);
     while (file) {
         pieceTok = strtok(fileTemp, "|");
     while (pieceTok != NULL) {
@@ -152,8 +163,8 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
         printf("%s\n", newStudentArray[i][j-1]);
         pieceTok = strtok(NULL, "|");
             if (pieceTok){
-                if (strchr(pieceTok, '\n')) {
-                    pieceTok[strlen(pieceTok)] = '\0';
+                if ((temp_str = strchr(pieceTok, '\n'))) {
+                    temp_str = NULL;
                 }
                 newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
                 strcpy(newStudentArray[i][j++],pieceTok);
@@ -163,13 +174,15 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
         }
         i++;
         j = 0;
+        //if the file gets to the end of the file the loop ends
         if (feof(file)) {
             break;
         }
-        fgets(fileTemp, 1023, file);
+     //set each next line in the string "fileTemp"
+        fgets(fileTemp, MAX_LINE, file);
     }
     fclose(file);
-    
+    free(fileTemp);
     countStudentsAndCourses(fileName, coursesPerStudent, numberOfStudents);
     return newStudentArray;
 }
