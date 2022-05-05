@@ -25,6 +25,7 @@
 /* Begin PBXFileReference section */
 		6EE5B27B2821E51200B5800B /* Exercise-4 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Exercise-4"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EE5B27E2821E51200B5800B /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		6EFC26D228232394000C98E2 /* studentList.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = studentList.txt; path = "Exercise-4/studentList.txt"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				6EE5B27E2821E51200B5800B /* main.c */,
+				6EFC26D228232394000C98E2 /* studentList.txt */,
 			);
 			path = "Exercise-4";
 			sourceTree = "<group>";

@@ -21,7 +21,7 @@ typedef struct Student
 }Student;
 
 void itoa(int num, char** str, int base); //itoa() made for allocated memory
-
+char *read_file(char *filename); //make file pointer in allocated memory
 //Part A
 void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int* numberOfStudents);
 int countPipes(const char* lineBuffer, int maxCount);
@@ -62,6 +62,7 @@ int main()
 void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
     if (!fileName) return;
+    fopen(fileName, "rt");
     char* fileTemp = (char*)calloc(strlen(fileName)+1, sizeof(char));
     if (fileTemp == NULL) {
         printf(ALO); exit(1);
@@ -103,9 +104,16 @@ int countPipes(const char* lineBuffer, int maxCount)
 
 char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
-    char* fileTemp = (char*)calloc(strlen(fileName), sizeof(char));
+    char* fileTemp;
+    FILE* file = fopen(fileName, "rt");
+    if (file == NULL) {
+        printf("Error reading file!\n");
+        exit(1);
+    }
+    fileTemp = file;
+    printf("%s", file);
     char* pieceTok, *temp_str;
-    int a = 0, b = 0;
+    int i = 0, j = 0;
 
     char*** newStudentArray = malloc(sizeof(char**));
     if (newStudentArray == NULL) {
@@ -123,24 +131,24 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
     strcpy(fileTemp, fileName);
     pieceTok = strtok(fileTemp, "|");
     while (pieceTok != NULL) {
-                newStudentArray[a][b] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
-                strcpy(newStudentArray[a][b],pieceTok);
-            b++;
+                newStudentArray[i] = (char**)malloc(sizeof(char*));
+        newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
+                strcpy(newStudentArray[i][j++],pieceTok);
                 pieceTok = strtok(NULL, ",");
-            newStudentArray[a][b] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
-            strcpy(newStudentArray[a][b],pieceTok);
-            b++;
+            newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
+            strcpy(newStudentArray[i][j++],pieceTok);
         pieceTok = strtok(NULL, "|");
             temp_str = pieceTok;
         pieceTok = strtok("\n", NULL);
             if (pieceTok){
-                newStudentArray[a][b] = (char*)calloc(strlen(temp_str)+1, sizeof(char));
-                strcpy(newStudentArray[a][b],temp_str);
-                b++;
-                newStudentArray[a][b] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
-                strcpy(newStudentArray[a][b],pieceTok);
-                b++;
+                newStudentArray[i][j] = (char*)calloc(strlen(temp_str)+1, sizeof(char));
+                strcpy(newStudentArray[i][j],temp_str);
+                j++;
+                newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
+                strcpy(newStudentArray[i][j],pieceTok);
+                j++;
             }
+        i++;
             temp_str = NULL;
         pieceTok = strtok(NULL, "|");
     }
@@ -272,6 +280,57 @@ void itoa(int num, char** str, int base)
     return ;
 }
 
+// Reads and stores the whole contents of the file with filename into a
+// dynamically allocated char array on the heap, returns a pointer to this char
+// array (or NULL if there was an error reading the file contents)/
+char *read_file(char *filename)
+{
+  // file pointer variable used to access the file
+  FILE *file;
+  
+  // attempt to open the file in read mode
+  file = fopen(filename, "rt");
+  
+  // if the file fails to open, return NULL as an error return value
+  if (file == NULL) return NULL;
+  
+  // move the file pointer to the end of the file
+  fseek(file, 0, SEEK_END);
+
+  // fseek(file) will return the current value of the position indicator,
+  // which will give us the number of characters in the file
+  int length = (int)ftell(file);
+
+  // move file pointer back to start of file so we can read each character
+  fseek(file, 0, SEEK_SET);
+  
+  // dynamically allocate a char array to store the file contents, we add 1 to
+  // length for the null terminator we will need to add to terminate the string
+  char *string = malloc(sizeof(char) * (length+1));
+  
+  // c will store each char we read from the string
+  char c;
+
+  // i will be an index into the char array string as we read each char
+  int i = 0;
+
+  // keep reading each char from the file until we reach the end of the file
+  while ( (c = fgetc(file)) != EOF)
+  {
+    // store char into the char array string
+    string[i++] = c;
+  }
+
+  // put a null terminator as the final char in the char array to properly
+  // terminate the string
+  string[i] = '\0';
+  
+  // close the file as we are now done with it
+  fclose(file);
+  
+  // return a pointer to the dynamically allocated string on the heap
+  return string;
+}
 /*
 char* itoa(int num, char* buffer, int base)
 {
