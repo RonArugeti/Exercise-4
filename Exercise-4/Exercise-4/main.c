@@ -63,7 +63,7 @@ int main()
 void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
     if (!fileName) return;
-    fopen(fileName, "rt");
+    fopen(fileName, "r");
     char* fileTemp = (char*)calloc(strlen(fileName)+1, sizeof(char));
     if (fileTemp == NULL) {
         printf(ALO); exit(1);
@@ -163,10 +163,10 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
         }
         i++;
         j = 0;
-        fgets(fileTemp, 1023, file);
-        if (file == EOF) {
+        if (feof(file)) {
             break;
         }
+        fgets(fileTemp, 1023, file);
     }
     fclose(file);
     
