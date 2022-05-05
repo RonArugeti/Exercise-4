@@ -138,7 +138,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
         pieceTok = strtok(fileTemp, "|");
     while (pieceTok != NULL) {
         if (!j) {
-            newStudentArray[i] = (char**)malloc(sizeof(char*));
+        newStudentArray[i] = (char**)malloc(sizeof(char*));
         newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
                       strcpy(newStudentArray[i][j++],pieceTok);
               printf("%s\n", newStudentArray[i][j-1]);
@@ -152,6 +152,9 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
         printf("%s\n", newStudentArray[i][j-1]);
         pieceTok = strtok(NULL, "|");
             if (pieceTok){
+                if (strchr(pieceTok, '\n')) {
+                    pieceTok[strlen(pieceTok)] = '\0';
+                }
                 newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
                 strcpy(newStudentArray[i][j++],pieceTok);
                 printf("%s\n", newStudentArray[i][j-1]);
@@ -161,7 +164,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
         i++;
         j = 0;
         fgets(fileTemp, 1023, file);
-        if (*fileTemp == '\n') {
+        if (file == EOF) {
             break;
         }
     }
