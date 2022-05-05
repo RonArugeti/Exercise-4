@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
+#define _CRT_NONSTDC_NO_DEPRECATE
 /*#define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>*/ //uncomment this block to check for heap memory allocation leaks.
 // Read https://docs.microsoft.com/en-us/visualstudio/debugger/finding-memory-leaks-using-the-crt-library?view=vs-2019
@@ -104,14 +105,26 @@ int countPipes(const char* lineBuffer, int maxCount)
 
 char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
-    char* fileTemp;
-    FILE* file = fopen(fileName, "rt");
+    FILE* file = fopen(fileName,"r");
     if (file == NULL) {
         printf("Error reading file!\n");
         exit(1);
     }
-    fileTemp = file;
-    printf("%s", file);
+    
+    // move the file pointer to the end of the file
+    fseek(file, 0, SEEK_END);
+    
+    // fseek(file) will return the current value of the position indicator,
+    // which will give us the number of characters in the file
+    int length = (int)ftell(file);
+    
+    // move file pointer back to start of file so we can read each character
+    fseek(file, 0, SEEK_SET);
+    
+    // dynamically allocate a char array to store the file contents, we add 1 to
+    // length for the null terminator we will need to add to terminate the string
+    char *fileTemp = malloc(sizeof(char) * (length+1));
+    
     char* pieceTok, *temp_str;
     int i = 0, j = 0;
 
@@ -119,39 +132,41 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
     if (newStudentArray == NULL) {
         printf(ALO); exit(1);
     }
-/*
-    for (int i = 0; i < *numberOfStudents; i++) {
-        for (int j = 0; j < (*coursesPerStudent)[i] *2; j++) {
-            newStudentArray[i][j] = malloc(sizeof(char));
-            if (newStudentArray[i][j] == NULL) {
-                printf(ALO); exit(1);
-            }
-        }
-    }*/
-    strcpy(fileTemp, fileName);
-    pieceTok = strtok(fileTemp, "|");
+
+    fgets(fileTemp, 1023, file);
+    while (file) {
+        pieceTok = strtok(fileTemp, "|");
     while (pieceTok != NULL) {
-                newStudentArray[i] = (char**)malloc(sizeof(char*));
+        if (!j) {
+            newStudentArray[i] = (char**)malloc(sizeof(char*));
         newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
-                strcpy(newStudentArray[i][j++],pieceTok);
-                pieceTok = strtok(NULL, ",");
+                      strcpy(newStudentArray[i][j++],pieceTok);
+              printf("%s\n", newStudentArray[i][j-1]);
+        }
+        pieceTok = strtok(NULL, ",");
+        if (!pieceTok) {
+            break;
+        }
             newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
             strcpy(newStudentArray[i][j++],pieceTok);
+        printf("%s\n", newStudentArray[i][j-1]);
         pieceTok = strtok(NULL, "|");
-            temp_str = pieceTok;
-        pieceTok = strtok("\n", NULL);
             if (pieceTok){
-                newStudentArray[i][j] = (char*)calloc(strlen(temp_str)+1, sizeof(char));
-                strcpy(newStudentArray[i][j],temp_str);
-                j++;
                 newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
-                strcpy(newStudentArray[i][j],pieceTok);
-                j++;
+                strcpy(newStudentArray[i][j++],pieceTok);
+                printf("%s\n", newStudentArray[i][j-1]);
             }
+        temp_str = NULL;
+        }
         i++;
-            temp_str = NULL;
-        pieceTok = strtok(NULL, "|");
+        j = 0;
+        fgets(fileTemp, 1023, file);
+        if (*fileTemp == '\n') {
+            break;
+        }
     }
+    fclose(file);
+    
     countStudentsAndCourses(fileName, coursesPerStudent, numberOfStudents);
     return newStudentArray;
 }
@@ -236,7 +251,7 @@ void itoa(int num, char** str, int base)
     
     temp_num = num;
     
-        /* Handle 0 explicitly, otherwise empty string is printed for 0 */
+        // Handle 0 explicitly, otherwise empty string is printed for 0
         if (num == 0)
         {
            *str = realloc(*str, sizeof(char)*2);
