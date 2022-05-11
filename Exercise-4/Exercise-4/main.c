@@ -1,5 +1,4 @@
 #define _CRT_SECURE_NO_WARNINGS
-#define _CRT_NONSTDC_NO_DEPRECATE
 /*#define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>*/ //uncomment this block to check for heap memory allocation leaks.
 // Read https://docs.microsoft.com/en-us/visualstudio/debugger/finding-memory-leaks-using-the-crt-library?view=vs-2019
@@ -64,34 +63,35 @@ int main()
 void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
     FILE* file = fopen(fileName, "rt");
-    if (feof(file)) {
-        printf(FOF); return;
-    }
+    if (feof(file)) { printf(FOF); return;}
     fseek(file, 0, SEEK_END);
     int length = (int)ftell(file);
     fseek(file, 0, SEEK_SET);
-    
-    char* fileTemp = (char*)calloc(length+1, sizeof(int));
+    char* fileTemp = (char*)calloc(length+1, sizeof(char));
     if (fileTemp == NULL) { printf(ALO); exit(1);}
     while (!feof(file)) {
     fgets(fileTemp, MAX_LINE, file);
         (*numberOfStudents)++;
-        fileTemp = strchr(fileTemp, '\n');
     }
+    (*numberOfStudents)--;
     free(fileTemp);
+    fileTemp = NULL;
     fclose(file);
     file = fopen(fileName, "rt");
-    if (feof(file)) {
-        printf(FOF); return;
-    }
-    fileTemp = (char*)calloc(length+1, sizeof(int));
+    if (feof(file)) { printf(FOF); return;}
+    fileTemp = (char*)calloc(length+1, sizeof(char));
     *coursesPerStudent = (int*)calloc(sizeof(int),*numberOfStudents);
     if (*coursesPerStudent == NULL || fileTemp == NULL) { printf(ALO); exit(1);}
     for (int i = 0; i < *numberOfStudents; i++) {
         fgets(fileTemp, MAX_LINE, file);
         (*coursesPerStudent)[i] = countPipes(fileTemp, *numberOfStudents);
     }
+    for (int i = 0; i < *numberOfStudents; i++) {
+        (*coursesPerStudent)[i];
+    }
     fclose(file);
+    free(fileTemp);
+    fileTemp = NULL;
     return;
 }
 
@@ -107,7 +107,8 @@ int countPipes(const char* lineBuffer, int maxCount)
     }
     while (lineBuffer || maxCount > 0) {
         lineBuffer = strchr(lineBuffer, '|');
-        if (*lineBuffer == '|') shown++;
+        if (!lineBuffer) break;
+        shown++;
         lineBuffer++;
         maxCount--;
     }
@@ -139,14 +140,14 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
     char* pieceTok, *temp_str;
     int i = 0, j = 0;
 
-    char*** newStudentArray = malloc(sizeof(char**));
-    if (newStudentArray == NULL) {
-        printf(ALO); exit(1);
-    }
+    char*** newStudentArray = (char***)malloc(sizeof(char**));
+    if (newStudentArray == NULL) { printf(ALO); exit(1);}
     //set the first line in string "fileTemp"
     fgets(fileTemp, MAX_LINE, file);
     while (file) {
         pieceTok = strtok(fileTemp, "|");
+        //if the file gets to the end of the file the loop ends
+        if (feof(file)) break;
     while (pieceTok != NULL) {
         if (!j) {
         newStudentArray[i] = (char**)malloc(sizeof(char*));
@@ -174,10 +175,6 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
         }
         i++;
         j = 0;
-        //if the file gets to the end of the file the loop ends
-        if (feof(file)) {
-            break;
-        }
      //set each next line in the string "fileTemp"
         fgets(fileTemp, MAX_LINE, file);
     }
@@ -186,24 +183,10 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
     countStudentsAndCourses(fileName, coursesPerStudent, numberOfStudents);
     return newStudentArray;
 }
-/*   for (int i = 0; i < 3; i++) {
-    for (int j = 0; i < 3; j++) {
-        free(newStudentArray[i][j]);
- newStudentArray[i][j] = NULL;
-    }
-}
- free(newStudentArray);
- newStudentArray = NULL;
- // free allocation for 3D array */
-
-//    Student* student = (Student*)malloc(sizeof(Student));
-    //add code here
-//    return '\0';
-//}
 
 void factorGivenCourse(char** const* students, const int* coursesPerStudent, int numberOfStudents, const char* courseName, int factor)
 {
-int grade_num;
+int grade_num = 0;
 if (factor > 20 || factor < -20) return;
 for (int i = 0; i < numberOfStudents; i++) {
  for (int j = 1; j < (coursesPerStudent[i])*2; j++) {
@@ -362,37 +345,4 @@ char *read_file(char *filename)
   // return a pointer to the dynamically allocated string on the heap
   return string;
 }
-/*
-char* itoa(int num, char* buffer, int base)
-{
-int current = 0;
-if (num == 0) {
-buffer[current++] = '0';
-buffer[current] = '\0';
-return buffer;
-}
-int num_digits = 0;
-if (num < 0) {
-if (base == 10) {
-num_digits ++;
-buffer[current] = '-';
-current ++;
-num *= -1;
-}
-else
-return NULL;
-}
-num_digits += (int)floor(log(num) / log(base)) + 1;
-while (current < num_digits)
-{
-int base_val = (int) pow(base, num_digits-1-current);
-int num_val = num / base_val;
- char value = num_val + '0';
-buffer[current] = value;
-current ++;
-num -= base_val * num_val;
-}
-buffer[current] = '\0';
-return buffer;*/
-
 
