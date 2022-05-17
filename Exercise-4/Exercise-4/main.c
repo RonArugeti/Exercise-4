@@ -6,8 +6,9 @@
 #include <stdio.h>
 #include <string.h>
 #define MAX_LINE 1023
-#define ALO "***Allocation Failed***\n"
-#define FOF "***Error Openning File***\n"
+#define ALO "***Allocation Failed***\n" // failed in allocating memory
+#define EIO fprintf(stdout, "Error opening file\n") // screen printing failed in openning
+#define EIC fprintf(stdout, "Error in closing file\n") //screen printing failed in closeing
 typedef struct StudentCourseGrade
 {
     char courseName[35];
@@ -63,7 +64,7 @@ int main()
 void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
     FILE* file = fopen(fileName, "rt");
-    if (feof(file)) { printf(FOF); return;}
+    if (file == NULL) { EIO; exit(1);}
     fseek(file, 0, SEEK_END);
     int length = (int)ftell(file);
     fseek(file, 0, SEEK_SET);
@@ -76,9 +77,7 @@ void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int*
     (*numberOfStudents)--;
     free(fileTemp);
     fileTemp = NULL;
-    fclose(file);
-    file = fopen(fileName, "rt");
-    if (feof(file)) { printf(FOF); return;}
+    fseek(file, 0, SEEK_SET);
     fileTemp = (char*)calloc(length+1, sizeof(char));
     *coursesPerStudent = (int*)calloc(sizeof(int),*numberOfStudents);
     if (*coursesPerStudent == NULL || fileTemp == NULL) { printf(ALO); exit(1);}
@@ -87,12 +86,13 @@ void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int*
         (*coursesPerStudent)[i] = countPipes(fileTemp, *numberOfStudents);
     }
     for (int i = 0; i < *numberOfStudents; i++) {
-        (*coursesPerStudent)[i];
+        printf("%d",(*coursesPerStudent)[i]);
     }
-    fclose(file);
+    fseek(file,0,SEEK_END);
+    fflush(file);
+    if (fclose(file) == EOF) EIC;
     free(fileTemp);
     fileTemp = NULL;
-    return;
 }
 
 int countPipes(const char* lineBuffer, int maxCount)
@@ -118,10 +118,7 @@ int countPipes(const char* lineBuffer, int maxCount)
 char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, int* numberOfStudents)
 {
     FILE* file = fopen(fileName,"r");
-    if (file == NULL) {
-        printf("Error reading file!\n");
-        exit(1);
-    }
+    if (file == NULL) { EIO; exit(1);}
     
     // move the file pointer to the end of the file
     fseek(file, 0, SEEK_END);
@@ -178,7 +175,9 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
      //set each next line in the string "fileTemp"
         fgets(fileTemp, MAX_LINE, file);
     }
-    fclose(file);
+    fseek(file,0,SEEK_END);
+    fflush(file);
+    if (fclose(file) == EOF) EIC;
     free(fileTemp);
     countStudentsAndCourses(fileName, coursesPerStudent, numberOfStudents);
     return newStudentArray;
@@ -189,18 +188,18 @@ void factorGivenCourse(char** const* students, const int* coursesPerStudent, int
 int grade_num = 0;
 if (factor > 20 || factor < -20) return;
 for (int i = 0; i < numberOfStudents; i++) {
- for (int j = 1; j < (coursesPerStudent[i])*2; j++) {
+ for (int j = 1; j < (coursesPerStudent[i]); j += 2) {
     if (!strcmp(courseName, students[i][j])) {
-    grade_num = atoi(students[i][j]) + factor;
-    if ((grade_num >= 0) && (grade_num <= 100))
-    itoa(grade_num, &(students[i][j]), 10);
+        grade_num = atoi(students[i][j+1]) + factor;
+    if ((grade_num > 0) && (grade_num < 100))
+    itoa(grade_num, &(students[i][j+1]), 10);
     if (grade_num < 0) {
-    students[i][j] = (char*)realloc(students[i][j], sizeof(char)*2);
-    students[i][j] = "0";
+    students[i][j+1] = (char*)realloc(students[i][j], sizeof(char)*2);
+    students[i][j+1] = "0";
     }
-    if (grade_num > 100) {
-    students[i][j] = (char*)realloc(students[i][j], sizeof(char)*4);
-    students[i][j] = "100";
+    if (grade_num >= 100) {
+    students[i][j+1] = (char*)realloc(students[i][j], sizeof(char)*4);
+    students[i][j+1] = "100";
         }
     }
 }
@@ -223,7 +222,28 @@ void printStudentArray(const char* const* const* students, const int* coursesPer
 
 void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStudents)
 {
-    //add code here
+    FILE* newFile;
+    newFile = fopen("studenList.txt", "wt+");
+    rewind(newFile);
+    for (int i = 0; i < numberOfStudents; i++) {
+        for (int j = 0; j < coursesPerStudent[i]; j++) {
+            fputs(students[i][j],newFile);
+            fseek(newFile, -1, SEEK_CUR);
+            fputc('|', newFile);
+        }
+        fseek(newFile, -1, SEEK_CUR);
+        fputc('\n', newFile);
+    }
+    for (int i = numberOfStudents; i >= 0 ; i--) {
+        for (int j = coursesPerStudent[i]; j >= 0; j--) {
+            free(students[i][j]);
+            students[i][j] = NULL;
+        }
+        free(students[i]);
+             students[i] = NULL;
+            }
+    fflush(newFile);
+    if (fclose(newFile) == EOF) EIC;
 }
 
 void writeToBinFile(const char* fileName, Student* students, int numberOfStudents)
@@ -239,23 +259,25 @@ Student* readFromBinFile(const char* fileName)
 
 Student* transformStudentArray(char*** students, const int* coursesPerStudent, int numberOfStudents)
 {
-    Student* std= (Student*)malloc(sizeof(Student));
+    Student* std = (Student*)malloc(sizeof(Student));
+    
+    
     return std;
 }
     // Implementation of itoa()
 void itoa(int num, char** str, int base)
     {
-        int i = 0, temp_num = 0,rem = 0;
+        int i = 0, temp_num = 0, rem = 0, mul = 0;
         int isNegative = 0;
     
-    temp_num = num;
+      temp_num = num;
     
         // Handle 0 explicitly, otherwise empty string is printed for 0
         if (num == 0)
         {
            *str = realloc(*str, sizeof(char)*2);
-            *(str[i++]) = '0';
-            *(str[i]) = '\0';
+            str[0][i++] = '0';
+            str[0][i] = '\0';
             return ;
         }
      
@@ -268,29 +290,27 @@ void itoa(int num, char** str, int base)
         }
     
     while (temp_num != 0) {
-        rem++;
+        mul++;
         temp_num = temp_num/base;
     }
     
-    *(str) = realloc(*(str), sizeof(char)*(rem+1));
+    *str = (char*)realloc(*(str), sizeof(char)*(mul+1));
     
         // If number is negative, append '-'
         if (isNegative){
-            *(str) = realloc(*(str), sizeof(char)*(rem+2));
-            *(str[i]) = '-';
-            i++;
+            *str = realloc(*(str), sizeof(char)*(mul+2));
+            str[0][i] = '-';
+            mul++;
         }
-    rem = 0;
-
+    i = (int)strlen(*str);
         // Process individual digits
         while (num != 0)
         {
             rem = num % base;
-            *(str[i++]) = (rem > 9)? (rem-10) + 'a' : rem + '0';
+            str[0][--mul] = (rem > 9)? (rem-10) + 'a' : rem + '0';
             num = num/base;
         }
-        *(str[i]) = '\0'; // Append string terminator
-    
+    str[0][++i] = '\0';
     return ;
 }
 

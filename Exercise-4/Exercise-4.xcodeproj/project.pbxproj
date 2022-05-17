@@ -7,12 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6ED7CA47282A7E200040B437 /* students.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6ED7CA46282A7E200040B437 /* students.bin */; };
+		6E6082AD282CF5900044D185 /* studentList.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EFC26D4282427CC000C98E2 /* studentList.txt */; };
+		6E6082AE282CF5960044D185 /* students.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6ED7CA46282A7E200040B437 /* students.bin */; };
 		6EE5B27F2821E51200B5800B /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EE5B27E2821E51200B5800B /* main.c */; };
-		6EFC26D5282427CC000C98E2 /* studentList.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EFC26D4282427CC000C98E2 /* studentList.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		6E6082AC282CF57E0044D185 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				6E6082AE282CF5960044D185 /* students.bin in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6EE5B2792821E51200B5800B /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -24,19 +34,18 @@
 		};
 		6EFC26D32824275F000C98E2 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				6ED7CA47282A7E200040B437 /* students.bin in CopyFiles */,
-				6EFC26D5282427CC000C98E2 /* studentList.txt in CopyFiles */,
+				6E6082AD282CF5900044D185 /* studentList.txt in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6ED7CA46282A7E200040B437 /* students.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = students.bin; path = "Exercise-4/students.bin"; sourceTree = "<group>"; };
+		6ED7CA46282A7E200040B437 /* students.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = students.bin; path = "/Users/ronarugeti/Documents/Exercise-4/Exercise-4/Exercise-4/students.bin"; sourceTree = "<absolute>"; };
 		6EE5B27B2821E51200B5800B /* Exercise-4 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Exercise-4"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EE5B27E2821E51200B5800B /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		6EFC26D4282427CC000C98E2 /* studentList.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = studentList.txt; path = "Exercise-4/studentList.txt"; sourceTree = "<group>"; };
@@ -90,6 +99,7 @@
 				6EE5B2782821E51200B5800B /* Frameworks */,
 				6EE5B2792821E51200B5800B /* CopyFiles */,
 				6EFC26D32824275F000C98E2 /* CopyFiles */,
+				6E6082AC282CF57E0044D185 /* CopyFiles */,
 			);
 			buildRules = (
 			);
