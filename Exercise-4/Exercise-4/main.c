@@ -259,9 +259,28 @@ Student* readFromBinFile(const char* fileName)
 
 Student* transformStudentArray(char*** students, const int* coursesPerStudent, int numberOfStudents)
 {
-    Student* std = (Student*)malloc(sizeof(Student));
-    
-    
+    int d = 0;
+    Student* std = (Student*)malloc(sizeof(Student)*numberOfStudents);
+    for (int i = 0; i < numberOfStudents; i++) {
+        for (int j = 0; j < coursesPerStudent[i]; j++) {
+            d = j;
+            if (!j) {strcpy(std[i].name, students[i][j++]);}
+            std[i].grades = (StudentCourseGrade*)malloc(sizeof(StudentCourseGrade));
+            strcpy(std[i].grades[d].courseName, students[i][j++]);
+            std[i].grades[d].grade = atoi(students[i][j++]);
+        }
+        std[i].numberOfCourses = coursesPerStudent[i];
+    }
+    for (int i = 0; i < numberOfStudents; i++) {
+        for (int j = 0; j < coursesPerStudent[i]; j++) {
+            if (!j) {
+            printf("name: %s\n", std[i].name);
+                printf("number of courses: %d\n", std[i].numberOfCourses);}
+            printf("course number %d is name: %s\n", j+1, std[i].grades[j].courseName);
+            printf("grade of the course: %d\n",std[i].grades[j].grade);
+        }
+        printf("\n");
+    }
     return std;
 }
     // Implementation of itoa()
