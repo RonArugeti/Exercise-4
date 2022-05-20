@@ -7,47 +7,63 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D6922A8A-4A38-41D6-A72E-A1BCC4EE29F3"
+            uuid = "8D44C7EE-3DBB-4AA7-972A-6955180B5398"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Exercise-4/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
-            landmarkName = "makeStudentArrayFromFile(fileName, coursesPerStudent, numberOfStudents)"
+            startingLineNumber = "287"
+            endingLineNumber = "287"
+            landmarkName = "writeToBinFile(fileName, students, numberOfStudents)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "CD1FE80B-79F9-492F-A9E1-C6CE2F4B1CA1"
+            uuid = "CB8C2B50-CD6C-4F79-875D-202451A4B4AF"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Exercise-4/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "369"
-            endingLineNumber = "369"
-            landmarkName = "read_file(filename)"
+            startingLineNumber = "256"
+            endingLineNumber = "256"
+            landmarkName = "studentsToFile(students, coursesPerStudent, numberOfStudents)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "10B1FF2A-9A0F-4690-B9D7-B8B32CE89C62"
+            uuid = "C176E726-2E96-4213-A280-CE246A4CF770"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Exercise-4/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
+            startingLineNumber = "314"
+            endingLineNumber = "314"
+            landmarkName = "readFromBinFile(fileName)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A2959725-8537-4ECE-B232-A43C66A172C8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Exercise-4/main.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
             landmarkName = "main()"
             landmarkType = "9">
          </BreakpointContent>
@@ -55,48 +71,64 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "4659BBEF-E6D9-4DBE-AA00-E3A5753A136A"
+            uuid = "BBD7B824-8537-4751-895E-CF5A565982B7"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Exercise-4/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "279"
-            endingLineNumber = "279"
-            landmarkName = "transformStudentArray(students, coursesPerStudent, numberOfStudents)"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
+            landmarkName = "makeStudentArrayFromFile(fileName, coursesPerStudent, numberOfStudents)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "16DF37A1-00BD-4AF8-8696-2C8575BF6568"
+            uuid = "7D2444D8-A1D3-4219-9D84-238E7ECC9E69"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Exercise-4/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "277"
-            endingLineNumber = "277"
-            landmarkName = "transformStudentArray(students, coursesPerStudent, numberOfStudents)"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "main()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F477794B-AE84-4516-9469-BCC33F9A8FE8"
+            uuid = "4A49E6BC-E96F-4AED-817C-DD012BBCB310"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Exercise-4/main.c"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "265"
-            endingLineNumber = "265"
-            landmarkName = "transformStudentArray(students, coursesPerStudent, numberOfStudents)"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
+            landmarkName = "makeStudentArrayFromFile(fileName, coursesPerStudent, numberOfStudents)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "39C39137-E37F-441C-977B-E53A2DB8C128"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Exercise-4/main.c"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "main()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

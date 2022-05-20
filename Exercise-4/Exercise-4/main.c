@@ -44,18 +44,56 @@ int main()
     int* coursesPerStudent = NULL;
     int numberOfStudents = 0;
     char*** students = makeStudentArrayFromFile("studentList.txt", &coursesPerStudent, &numberOfStudents);
+    for (int i = 0, j = 0; i < numberOfStudents; i++) {
+        printf("%s\n", students[i][j++]);
+        for (; j <= 2 * coursesPerStudent[i]; j++) {
+            printf("%s\n", students[i][j]);
+        }
+        printf("\n");
+        j = 0;
+    }
+    fseek(stdin, 0, SEEK_END);
+    
     factorGivenCourse(students, coursesPerStudent, numberOfStudents, "Advanced Topics in C", +5);
     printStudentArray(students, coursesPerStudent, numberOfStudents);
-    //studentsToFile(students, coursesPerStudent, numberOfStudents); //this frees all memory. Part B fails if this line runs. uncomment for testing (and comment out Part B)
+//studentsToFile(students, coursesPerStudent, numberOfStudents); //this frees all memory. Part B fails if this line runs. uncomment for testing (and comment out Part B)
     
     //Part B
     Student* transformedStudents = transformStudentArray(students, coursesPerStudent, numberOfStudents);
+    
+    for (int i = 0; i < numberOfStudents; i++) {
+        for (int j = 0; j < coursesPerStudent[i]; j++) {
+            if (!j) {
+            printf("name: %s\n", (transformedStudents + i)->name);
+                printf("number of courses: %d\n", (transformedStudents + i)->numberOfCourses);}
+            printf("course number %d is name: %s\n", j+1, (transformedStudents + i)->grades[j].courseName);
+            printf("grade of the course: %d\n", (transformedStudents + i)->grades[j].grade);
+        }
+        printf("\n");
+    }
+    fseek(stdin, 0, SEEK_END);
+
     writeToBinFile("students.bin", transformedStudents, numberOfStudents);
     Student* testReadStudents = readFromBinFile("students.bin");
-
-    //add code to free all arrays of struct Student
-
-
+     
+    for (int i = 0; i < numberOfStudents; i++) {
+        printf("%s\n %d\n\n", (testReadStudents + i)->name, (testReadStudents + i)->numberOfCourses);
+        for (int j = 0; j < (testReadStudents + i)->numberOfCourses; j++) {
+            printf("%s\n %d\n", (testReadStudents + i)->grades[j].courseName, (testReadStudents + i)->grades[j].grade);
+        }
+    }
+    fseek(stdin, 0, SEEK_END);
+    
+    //code to free all arrays of struct Student
+    for (int i = numberOfStudents; i >= 0; i--) {
+     free((testReadStudents + i)->grades);
+        (testReadStudents + i)->grades = NULL;
+      }
+    free(testReadStudents);
+         testReadStudents = NULL;
+  
+    fflush(stdin);
+    
     /*_CrtDumpMemoryLeaks();*/ //uncomment this block to check for heap memory allocation leaks.
     // Read https://docs.microsoft.com/en-us/visualstudio/debugger/finding-memory-leaks-using-the-crt-library?view=vs-2019
 
@@ -86,9 +124,6 @@ void countStudentsAndCourses(const char* fileName, int** coursesPerStudent, int*
         fgets(fileTemp, MAX_LINE, file);
         (*coursesPerStudent)[i] = countPipes(fileTemp, *numberOfStudents);
     }
-    for (int i = 0; i < *numberOfStudents; i++) { printf("%d",(*coursesPerStudent)[i]);
-    }
-    printf("\n");
     fflush(file);
     if (fclose(file) == EOF) EIC;
     free(fileTemp);
@@ -121,7 +156,7 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
     if (file == NULL) { EIO; exit(1);}
     
     char* fileTemp = (char*)calloc(sizeof(char) ,(MAX_LINE+1));
-    if (fileTemp == NULL) {printf(ALO); exit(1);}
+    if (fileTemp == NULL) { printf(ALO); exit(1);}
     
     char* pieceTok, *temp_str;
     int i = 0, j = 0;
@@ -136,32 +171,31 @@ char*** makeStudentArrayFromFile(const char* fileName, int** coursesPerStudent, 
         fileTemp = strchr(fileTemp, '|');
         while (1) { fileTemp--; if(fileTemp[0] >= 'A' && fileTemp[0] <= 'Z') break; }
         pieceTok = strtok(fileTemp, "|");
-       
     while (pieceTok != NULL) {
         if (!j) {
         newStudentArray[i] = (char**)malloc(sizeof(char*));
-        newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
+        newStudentArray[i][j] = (char*)calloc((int)strlen(pieceTok)+1, sizeof(char));
             newStudentArray[i][j][(int)strlen(pieceTok)] = '\0';
                       strcpy(newStudentArray[i][j++],pieceTok);
-              printf("%s\n", newStudentArray[i][j-1]);
         }
         pieceTok = strtok(NULL, ",");
-        if (!pieceTok) {
-            break;
-        }
-        newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
+        if (!pieceTok) break;
+        newStudentArray[i][j] = (char*)calloc((int)strlen(pieceTok)+1, sizeof(char));
         newStudentArray[i][j][(int)strlen(pieceTok)] = '\0';
             strcpy(newStudentArray[i][j++],pieceTok);
-        printf("%s\n", newStudentArray[i][j-1]);
         pieceTok = strtok(NULL, "|");
+        if (!pieceTok) break;
             if (pieceTok){
                 if ((temp_str = strchr(pieceTok, '\n'))) {
-                    temp_str = NULL;
+                    temp_str = pieceTok;
+                    while (temp_str[0] >= '0' && temp_str[0] <= '9') {
+                    temp_str++;
                 }
-                newStudentArray[i][j] = (char*)calloc(strlen(pieceTok)+1, sizeof(char));
+                    temp_str[0] = '\0';
+                }
+                newStudentArray[i][j] = (char*)calloc((int)strlen(pieceTok)+1, sizeof(char));
                 newStudentArray[i][j][(int)strlen(pieceTok)] = '\0';
                 strcpy(newStudentArray[i][j++],pieceTok);
-                printf("%s\n", newStudentArray[i][j-1]);
             }
         temp_str = NULL;
         }
@@ -227,13 +261,18 @@ void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStuden
     for (int i = 0; i < numberOfStudents; i++) {
         for (int j = 0; j < coursesPerStudent[i]; j++) {
             fputs(students[i][j],newFile);
+            if (j % 2) {
+            fseek(newFile, -1, SEEK_CUR);
+            fputc(',', newFile);
+        }
             fseek(newFile, -1, SEEK_CUR);
             fputc('|', newFile);
+            
         }
         fseek(newFile, -1, SEEK_CUR);
         fputc('\n', newFile);
     }
-    for (int i = numberOfStudents; i >= 0 ; i--) {
+    for (int i = numberOfStudents -1; i >= 0 ; i--) {
         for (int j = coursesPerStudent[i]; j >= 0; j--) {
             free(students[i][j]);
             students[i][j] = NULL;
@@ -247,38 +286,67 @@ void studentsToFile(char*** students, int* coursesPerStudent, int numberOfStuden
 
 void writeToBinFile(const char* fileName, Student* students, int numberOfStudents)
 {
-    //add code here
+    char bar = '|', comma = ',', space_bar = '\n';
+    FILE* StuBinFile = fopen(fileName, "wb");
+    fwrite(&numberOfStudents, sizeof(int), 1, StuBinFile);
+    for (int i = 0; i < numberOfStudents; i++) {
+        for (int j = 0; j < ((students + i)->numberOfCourses); j++) {
+            if (j == 0) {
+    fwrite((students + i)->name, sizeof(char), 35, StuBinFile);
+    fseek(StuBinFile, - sizeof(char), SEEK_CUR);
+    fwrite(&bar, sizeof(char), 1, StuBinFile);
+    fwrite(&((students + i)->numberOfCourses), sizeof(int), 1, StuBinFile);
+    }
+    fwrite((students + i)->grades[j].courseName, sizeof(char), 35, StuBinFile);
+    fseek(StuBinFile, - sizeof(char), SEEK_CUR);
+    fwrite(&comma, sizeof(char), 1, StuBinFile);
+    fwrite(&((students + i)->grades[j].grade), sizeof(int), 1, StuBinFile);
+        }
+    fwrite(&space_bar, sizeof(char), 1, StuBinFile);
+    }
+    fflush(StuBinFile);
+    if (fclose(StuBinFile) == EOF) EIC;
 }
-
 Student* readFromBinFile(const char* fileName)
 {
-    Student* std= (Student*)malloc(sizeof(Student));
-    return std;
+    FILE* BinFile = fopen(fileName, "rt");
+    int sizeOfStudents = 0, i = 0;
+    fscanf(BinFile, "%d", &sizeOfStudents);
+    Student* newStudent = (Student*)calloc(sizeof(Student), sizeOfStudents);
+    fseek(BinFile, sizeof(int), SEEK_SET);
+    while (feof(BinFile) != EOF) {
+        fscanf(BinFile, "%d", &((newStudent + i)->numberOfCourses));
+        fscanf(BinFile, "%[^|]", (newStudent + i)->name);
+        (newStudent + i)->grades = (StudentCourseGrade*)calloc(sizeof(StudentCourseGrade), (newStudent + i)->numberOfCourses);
+        for (int j = 0; j < 2 *(newStudent + i)->numberOfCourses; j++) {
+            fseek(BinFile, sizeof(char), SEEK_CUR);
+            fscanf(BinFile, "%[^,]", (newStudent + i)->grades[j].courseName);
+            fseek(BinFile, sizeof(char), SEEK_CUR);
+            fscanf(BinFile, "%d", &((newStudent + i)->grades[j].grade));
+            fseek(BinFile, sizeof(char), SEEK_CUR);
+        }
+        i++;
+    }
+    i = 0;
+    fflush(BinFile);
+    if (fclose(BinFile) == EOF) EIC;
+    return newStudent;
 }
 
 Student* transformStudentArray(char*** students, const int* coursesPerStudent, int numberOfStudents)
 {
     int d = 0;
-    Student* std = (Student*)malloc(sizeof(Student)*numberOfStudents);
+    Student* std = (Student*)calloc(sizeof(Student), numberOfStudents);
     for (int i = 0; i < numberOfStudents; i++) {
-        (std + i)->grades = (StudentCourseGrade*)malloc(sizeof(StudentCourseGrade)*coursesPerStudent[i]);
-        for (int j = 0; j < 2 * coursesPerStudent[i]; j++) {
+(std + i)->grades = (StudentCourseGrade*)calloc(sizeof(StudentCourseGrade), coursesPerStudent[i]);
+        if ((std + i) == NULL) { printf(ALO); exit(1);}
+        for (int j = 0; j < coursesPerStudent[i]; j++) {
             if (j == 0) strcpy((std + i)->name, students[i][j++]);
             strcpy((std + i)->grades[d].courseName, students[i][j++]);
             (std + i)->grades[d++].grade = atoi(students[i][j]);
         }
         d = 0;
         (std + i)->numberOfCourses = coursesPerStudent[i];
-    }
-    for (int i = 0; i < numberOfStudents; i++) {
-        for (int j = 0; j < coursesPerStudent[i]; j++) {
-            if (!j) {
-            printf("name: %s\n", (std + i)->name);
-                printf("number of courses: %d\n", (std + i)->numberOfCourses);}
-            printf("course number %d is name: %s\n", j+1, (std + i)->grades[j].courseName);
-            printf("grade of the course: %d\n", (std + i)->grades[j].grade);
-        }
-        printf("\n");
     }
     return std;
 }
@@ -330,57 +398,5 @@ void itoa(int num, char** str, int base)
         }
     str[0][++i] = '\0';
     return ;
-}
-
-// Reads and stores the whole contents of the file with filename into a
-// dynamically allocated char array on the heap, returns a pointer to this char
-// array (or NULL if there was an error reading the file contents)/
-char *read_file(char *filename)
-{
-  // file pointer variable used to access the file
-  FILE *file;
-  
-  // attempt to open the file in read mode
-  file = fopen(filename, "rt");
-  
-  // if the file fails to open, return NULL as an error return value
-  if (file == NULL) return NULL;
-  
-  // move the file pointer to the end of the file
-  fseek(file, 0, SEEK_END);
-
-  // fseek(file) will return the current value of the position indicator,
-  // which will give us the number of characters in the file
-  int length = (int)ftell(file);
-
-  // move file pointer back to start of file so we can read each character
-  fseek(file, 0, SEEK_SET);
-  
-  // dynamically allocate a char array to store the file contents, we add 1 to
-  // length for the null terminator we will need to add to terminate the string
-  char *string = malloc(sizeof(char) * (length+1));
-  
-  // c will store each char we read from the string
-  char c;
-
-  // i will be an index into the char array string as we read each char
-  int i = 0;
-
-  // keep reading each char from the file until we reach the end of the file
-  while ( (c = fgetc(file)) != EOF)
-  {
-    // store char into the char array string
-    string[i++] = c;
-      printf("%c",string[i-1]);
-  }
-  // put a null terminator as the final char in the char array to properly
-  // terminate the string
-  string[i] = '\0';
-  
-  // close the file as we are now done with it
-  fclose(file);
-  
-  // return a pointer to the dynamically allocated string on the heap
-  return string;
 }
 
