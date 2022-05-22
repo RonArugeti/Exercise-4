@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		6E6082AD282CF5900044D185 /* studentList.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EFC26D4282427CC000C98E2 /* studentList.txt */; };
-		6E6082AE282CF5960044D185 /* students.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6ED7CA46282A7E200040B437 /* students.bin */; };
 		6EE5B27F2821E51200B5800B /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EE5B27E2821E51200B5800B /* main.c */; };
 /* End PBXBuildFile section */
 
@@ -19,7 +18,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				6E6082AE282CF5960044D185 /* students.bin in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,7 +43,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6ED7CA46282A7E200040B437 /* students.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = students.bin; path = "/Users/ronarugeti/Documents/Exercise-4/Exercise-4/Exercise-4/students.bin"; sourceTree = "<absolute>"; };
+		6EA1FFE72838EBD6009BF420 /* students.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = students.bin; path = "Exercise-4/students.bin"; sourceTree = "<group>"; };
 		6EE5B27B2821E51200B5800B /* Exercise-4 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Exercise-4"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EE5B27E2821E51200B5800B /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		6EFC26D4282427CC000C98E2 /* studentList.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = studentList.txt; path = "Exercise-4/studentList.txt"; sourceTree = "<group>"; };
@@ -65,7 +63,7 @@
 		6EE5B2722821E51200B5800B = {
 			isa = PBXGroup;
 			children = (
-				6ED7CA46282A7E200040B437 /* students.bin */,
+				6EA1FFE72838EBD6009BF420 /* students.bin */,
 				6EFC26D4282427CC000C98E2 /* studentList.txt */,
 				6EE5B27D2821E51200B5800B /* Exercise-4 */,
 				6EE5B27C2821E51200B5800B /* Products */,
