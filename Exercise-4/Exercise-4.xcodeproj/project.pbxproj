@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6E6082AD282CF5900044D185 /* studentList.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EFC26D4282427CC000C98E2 /* studentList.txt */; };
+		6E869708283A3F0800DA9FBD /* students.bin in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6EA1FFE72838EBD6009BF420 /* students.bin */; };
 		6EE5B27F2821E51200B5800B /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EE5B27E2821E51200B5800B /* main.c */; };
 /* End PBXBuildFile section */
 
@@ -18,6 +19,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				6E869708283A3F0800DA9FBD /* students.bin in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
